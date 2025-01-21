@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 const App = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [direction, setDirection] = useState("");
-  let newDirection = "";
-  const handleClick = (e: { clientX: any; clientY: any }) => {
+  const [isRotating, setIsRotating] = useState(false);
+
+  const handleClick = (e: { clientX: number; clientY: number }) => {
     const { clientX, clientY } = e;
-    newDirection = clientX > position.x ? "right" : "left";
+    const newDirection = clientX > position.x ? "right" : "left";
 
     setDirection(newDirection);
+    setIsRotating(true);
 
-    setPosition({ x: clientX, y: clientY });
+    setTimeout(() => {
+      setPosition({ x: clientX, y: clientY });
+      setIsRotating(false);
+    }, 1000);
   };
+
   return (
     <div className="container" onClick={handleClick}>
       <img
@@ -23,6 +29,7 @@ const App = () => {
           transform: `translate(${position.x - 50}px, ${position.y - 50}px) ${
             direction === "right" ? "scaleX(-1)" : ""
           }`,
+          transition: isRotating ? "transform 1s" : "transform 6s",
         }}
       />
     </div>
